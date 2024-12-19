@@ -1,0 +1,15 @@
+server.port: 8080
+spring:
+  application:
+    name: k8test
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/profile_db
+    username: ${POSTGRES_NAME:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    p6spy.debug: false
+  jpa:
+    database: postgresql
+app:
+  configValue: ${CONFIG_VALUE:default}
+  secretValue: ${SECRET_VALUE:default}

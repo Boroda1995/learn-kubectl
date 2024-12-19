@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-init-scripts
+  namespace: k8-app
+data:
+  init.sql: |
+    
+    CREATE SCHEMA psr;
+    
+    CREATE TABLE psr.person_address (
+      id varchar(254) NOT NULL,
+      person_id varchar(254) NOT NULL,
+      city varchar(400) NULL,
+      street varchar(1000) NULL,
+      building varchar(255) NULL,
+      room varchar(255) NULL,
+      is_active bool NOT NULL
+    );

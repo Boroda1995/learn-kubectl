@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db1
+  namespace: k8-app
+spec:
+  serviceName: "db1"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db1
+  template:
+    metadata:
+      labels:
+        app: db1
+    spec:
+      containers:
+        - name: db1-container
+          image: postgres:latest
+          env:
+            - name: POSTGRES_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: POSTGRES_NAME
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: POSTGRES_PASSWORD
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: db1-storage
+            - mountPath: /docker-entrypoint-initdb.d
+              name: db-init-scripts
+              readOnly: true
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+              exec:
+                command:
+                  - pg_isready
+                  - -U
+                  - postgres
+              initialDelaySeconds: 5
+              periodSeconds: 5
+          startupProbe:
+              exec:
+                command:
+                  - pg_isready
+                  - -U
+                  - postgres
+              initialDelaySeconds: 20
+              failureThreshold: 5
+      volumes:
+        - name: db-init-scripts
+          configMap:
+            name: db-init-scripts
+            items:
+              - key: init.sql
+                path: init.sql
+  volumeClaimTemplates:
+    - metadata:
+        name: db1-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: hostpath
