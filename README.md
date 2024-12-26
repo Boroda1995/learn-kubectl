@@ -9,4 +9,4 @@ k8/
 |&mdash;&emsp;2_task/...   - Module 2: Deployment and Configuration in Kubernetes  
 |&mdash;&emsp;3_task/...   - Module 3: Helm Overview  
 
-|- src/ - project root
+src/ - project root
