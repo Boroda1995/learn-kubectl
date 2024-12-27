@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: service1-ingress
+  namespace: k8-app
+spec:
+  rules:
+    - host: custom-app.local
+      http:
+        paths:
+          - path: /v1/b2b/hello
+            pathType: Prefix
+            backend:
+              service:
+                name: service1
+                port:
+                  number: 80
