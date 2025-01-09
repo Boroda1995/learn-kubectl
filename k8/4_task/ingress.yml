@@ -3,13 +3,16 @@ kind: Ingress
 metadata:
   name: service1-ingress
   namespace: k8-app
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /v1/b2b/$1
 spec:
   rules:
     - host: custom-app.local
       http:
         paths:
-          - path: /v1/b2b/hello
-            pathType: Prefix
+          - path: /(hello|genre)(/|$)(.*)
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: service1
